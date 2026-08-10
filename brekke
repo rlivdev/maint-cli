@@ -4,7 +4,7 @@
 # com ~/.brekke montado em /data.
 set -euo pipefail
 
-BREKKE_IMAGE="${BREKKE_IMAGE:-brekke-cloud/brekke-cli:latest}"
+BREKKE_IMAGE="${BREKKE_IMAGE:-raphaelbh/brekke-cli:latest}"
 BREKKE_HOME="${BREKKE_HOME:-$HOME/.brekke}"
 
 if ! command -v docker >/dev/null 2>&1; then
