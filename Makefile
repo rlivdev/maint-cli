@@ -24,4 +24,4 @@ docker-push:
 	docker push $(image)
 
 install:
-	install -m 755 ./brekke $(DESTDIR)$$HOME/.local/bin/brekke
+	./install.sh
