@@ -9,24 +9,38 @@ Ferramenta de linha de comando para **backup** e **restore** de **PostgreSQL** e
 
 ## Instalação
 
-### 1. Build da imagem
+Clone o repositório e execute `make install`:
 
 ```sh
+# repo privado: use git com autenticação (HTTPS token / SSH)
+git clone https://github.com/brekke-cloud/brekke-cli.git
 cd brekke-cli
-make docker-build          # gera imagem brekke:latest
+make install
 ```
 
-### 2. Instalar o wrapper
+`make install` (via `install.sh`):
+1. baixa/puxa a imagem `brekke-cloud/brekke-cli` do Docker Hub (público)
+2. instala o wrapper `brekke` em `~/.local/bin`
+3. cria `~/.brekke/profiles` e `~/.brekke/backups`
+4. na primeira execução do container, puxa a imagem automaticamente
+
+Certifique-se de que `~/.local/bin` está no PATH:
 
 ```sh
-# compila o binário nativo (usado apenas como wrapper)
-make build                 # gera ./bin/brekke
-
-# opcional: colocar no PATH
-install bin/brekke ~/.local/bin/brekke
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
 ```
 
-O binário nativo apenas valida argumentos e dispara o container Docker. Toda a lógica roda no container.
+> **Requisito:** Docker instalado. Go é necessário apenas para build manual (`make build`), não para `make install`.
+
+### Build manual (contribuidores)
+
+```sh
+make docker-build          # builda imagem brekke-cloud/brekke-cli:latest
+make build                 # builda binário nativo (go build) em ./bin/
+make test                  # roda testes
+```
+
+O binário nativo apenas dispara o container Docker. Toda a lógica roda no container.
 
 ## Configuração
 
