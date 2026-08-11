@@ -2,7 +2,7 @@ name: release-dockerhub
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/brekke-cli
