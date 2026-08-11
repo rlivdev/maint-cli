@@ -74,6 +74,8 @@ func dumpPostgres(tmpDir string, pg *PGConfig) error {
 		"-d", pg.Database,
 		"--clean",
 		"--if-exists",
+		"--no-owner",
+		"--no-acl",
 		"-f", outFile,
 	}
 
