@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/brekke-cli
+  DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/maint-cli
 
 jobs:
   build-and-push:

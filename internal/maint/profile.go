@@ -1,4 +1,4 @@
-package brekke
+package maint
 
 import (
 	"fmt"
@@ -65,7 +65,7 @@ func CheckDataDir(dataDir string) error {
 	return nil
 }
 
-// LoadProfile carrega ~/.brekke/profiles/<name>.yaml dentro de dataDir.
+// LoadProfile carrega ~/.maint/profiles/<name>.yaml dentro de dataDir.
 func LoadProfile(dataDir, name string) (*Profile, error) {
 	if !profileNameRe.MatchString(name) {
 		return nil, fmt.Errorf("nome de profile inválido %q", name)

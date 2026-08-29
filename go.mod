@@ -1,4 +1,4 @@
-module github.com/brekke/brekke-cli
+module github.com/rlivdev/maint-cli
 
 go 1.26.5
 

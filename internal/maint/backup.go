@@ -1,4 +1,4 @@
-package brekke
+package maint
 
 import (
 	"archive/tar"
@@ -31,7 +31,7 @@ func RunBackup(dataDir string, p *Profile) (*BackupResult, error) {
 		return nil, fmt.Errorf("falha ao criar diretório de backup: %w", err)
 	}
 
-	tmpDir, err := os.MkdirTemp("", "brekke-"+p.Name+"-")
+	tmpDir, err := os.MkdirTemp("", "maint-"+p.Name+"-")
 	if err != nil {
 		return nil, fmt.Errorf("falha ao criar diretório temporário: %w", err)
 	}
@@ -123,7 +123,7 @@ func mirrorMinio(tmpDir string, mi *MinioConfig) error {
 // separados e um config-dir próprio. Evita falhas de parsing quando a senha
 // contém caracteres especiais (ex. @, :), comuns quando embutida em MC_HOST_*.
 func newMcRunner(mi *MinioConfig) (func(args ...string) (string, error), error) {
-	cfgDir, err := os.MkdirTemp("", "brekke-mc-")
+	cfgDir, err := os.MkdirTemp("", "maint-mc-")
 	if err != nil {
 		return nil, fmt.Errorf("falha ao criar config-dir do mc: %w", err)
 	}

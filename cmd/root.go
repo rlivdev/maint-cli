@@ -3,15 +3,15 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/brekke/brekke-cli/internal/brekke"
+	"github.com/rlivdev/maint-cli/internal/maint"
 	"github.com/spf13/cobra"
 )
 
 var dataDir string
 
 var rootCmd = &cobra.Command{
-	Use:   "brekke",
-	Short: "brekke é uma ferramenta de backup e restore para PostgreSQL e MinIO",
+	Use:   "maint",
+	Short: "maint é uma ferramenta de backup e restore para PostgreSQL e MinIO",
 	PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 		return nil
 	},
@@ -27,7 +27,7 @@ func init() {
 	rootCmd.AddCommand(newBackupCmd())
 	rootCmd.AddCommand(newRestoreCmd())
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, _ []string) error {
-		if err := brekke.CheckDataDir(dataDir); err != nil {
+		if err := maint.CheckDataDir(dataDir); err != nil {
 			return fmt.Errorf("data dir inválido: %w", err)
 		}
 		return nil

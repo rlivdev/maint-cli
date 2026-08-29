@@ -1,4 +1,4 @@
-package brekke
+package maint
 
 import (
 	"archive/tar"

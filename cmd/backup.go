@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/brekke/brekke-cli/internal/brekke"
+	"github.com/rlivdev/maint-cli/internal/maint"
 	"github.com/spf13/cobra"
 )
 
@@ -20,12 +20,12 @@ func newBackupCmd() *cobra.Command {
 				profileName = getDefaultProfile()
 			}
 
-			p, err := brekke.LoadProfile(dataDir, profileName)
+			p, err := maint.LoadProfile(dataDir, profileName)
 			if err != nil {
 				return err
 			}
 
-			res, err := brekke.RunBackup(dataDir, p)
+			res, err := maint.RunBackup(dataDir, p)
 			if err != nil {
 				return err
 			}
@@ -52,7 +52,7 @@ func newRestoreCmd() *cobra.Command {
 				profileName = getDefaultProfile()
 			}
 
-			p, err := brekke.LoadProfile(dataDir, profileName)
+			p, err := maint.LoadProfile(dataDir, profileName)
 			if err != nil {
 				return err
 			}
@@ -67,14 +67,14 @@ func newRestoreCmd() *cobra.Command {
 					return err
 				}
 			} else {
-				backupFile, err = brekke.FindLatestBackup(dataDir, profileName)
+				backupFile, err = maint.FindLatestBackup(dataDir, profileName)
 				if err != nil {
 					return err
 				}
 				fmt.Printf("Usando backup mais recente: %s\n", filepath.Base(backupFile))
 			}
 
-			if err := brekke.RunRestore(dataDir, p, backupFile); err != nil {
+			if err := maint.RunRestore(dataDir, p, backupFile); err != nil {
 				return err
 			}
 

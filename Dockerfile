@@ -8,7 +8,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/brekke ./main.go
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/maint ./main.go
 
 # Runtime stage
 FROM debian:bookworm-slim
@@ -33,9 +33,9 @@ RUN apt-get update \
 RUN curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/bin/mc \
     && chmod +x /usr/bin/mc
 
-COPY --from=builder /out/brekke /usr/bin/brekke
+COPY --from=builder /out/maint /usr/bin/maint
 
 # Diretório padrão montado pelo wrapper (profiles + backups)
 RUN mkdir -p /data/profiles /data/backups
 
-ENTRYPOINT ["brekke"]
+ENTRYPOINT ["maint"]

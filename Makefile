@@ -1,10 +1,10 @@
 .PHONY: build docker-build docker-run docker-push test vet install
 
 version ?= latest
-image := brekke-cloud/brekke-cli:$(version)
+image := rlivdev/maint-cli:$(version)
 
 build:
-	CGO_ENABLED=0 go build -trimpath -o bin/brekke ./main.go
+	CGO_ENABLED=0 go build -trimpath -o bin/maint ./main.go
 
 vet:
 	go vet ./...
@@ -17,7 +17,7 @@ docker-build:
 
 docker-run:
 	docker run --rm -it \
-		-v "$$HOME/.brekke:/data" \
+		-v "$$HOME/.maint:/data" \
 		$(image) $(ARGS)
 
 docker-push:

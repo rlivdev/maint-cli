@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/brekke/brekke-cli/cmd"
+	"github.com/rlivdev/maint-cli/cmd"
 )
 
 func main() {

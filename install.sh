@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Brekke CLI - instalador.
-# Instala o wrapper "brekke" no PATH. A imagem docker é puxada
+# Maint CLI - instalador.
+# Instala o wrapper "maint" no PATH. A imagem docker é puxada
 # automaticamente pelo wrapper na primeira execução (Docker Hub).
 set -euo pipefail
 
 # ----- configuração ---------------------------------------------------------
-BREKKE_REPO="${BREKKE_REPO:-brekke-cloud/brekke-cli}"
-BREKKE_BRANCH="${BREKKE_BRANCH:-main}"
-BREKKE_URL="${BREKKE_URL:-https://raw.githubusercontent.com/$BREKKE_REPO/$BREKKE_BRANCH/brekke}"
+MAINT_REPO="${MAINT_REPO:-rlivdev/maint-cli}"
+MAINT_BRANCH="${MAINT_BRANCH:-main}"
+MAINT_URL="${MAINT_URL:-https://raw.githubusercontent.com/$MAINT_REPO/$MAINT_BRANCH/maint}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
-BREKKE_HOME="${BREKKE_HOME:-$HOME/.brekke}"
+MAINT_HOME="${MAINT_HOME:-$HOME/.maint}"
 
 FMT_BOLD='\033[1m'
 FMT_GREEN='\033[0;32m'
@@ -28,22 +28,22 @@ fi
 # ----- obtenção do wrapper ---------------------------------------------------
 # Perfere wrapper local (clone do repo), mas funciona via curl|bash baixando
 # o wrapper do repositório.
-SRC="${BREKKE_SOURCE:-}"
+SRC="${MAINT_SOURCE:-}"
 if [ -z "$SRC" ]; then
-  SRC="$(dirname "$(readlink -f "${0}" 2>/dev/null || echo "$0")")/brekke"
+  SRC="$(dirname "$(readlink -f "${0}" 2>/dev/null || echo "$0")")/maint"
 fi
 
 if [ ! -f "$SRC" ]; then
   if command -v curl >/dev/null 2>&1; then
-    info "wrapper não encontrado. Baixando de $BREKKE_URL"
+    info "wrapper não encontrado. Baixando de $MAINT_URL"
     TMP="$(mktemp -d)"
-    curl -fsSL "$BREKKE_URL" -o "$TMP/brekke" || { warn "erro: falha ao baixar wrapper"; exit 1; }
-    SRC="$TMP/brekke"
+    curl -fsSL "$MAINT_URL" -o "$TMP/maint" || { warn "erro: falha ao baixar wrapper"; exit 1; }
+    SRC="$TMP/maint"
   elif command -v wget >/dev/null 2>&1; then
-    info "wrapper não encontrado. Baixando de $BREKKE_URL"
+    info "wrapper não encontrado. Baixando de $MAINT_URL"
     TMP="$(mktemp -d)"
-    wget -qO "$TMP/brekke" "$BREKKE_URL" || { warn "erro: falha ao baixar wrapper"; exit 1; }
-    SRC="$TMP/brekke"
+    wget -qO "$TMP/maint" "$MAINT_URL" || { warn "erro: falha ao baixar wrapper"; exit 1; }
+    SRC="$TMP/maint"
   else
     warn "erro: wrapper local ausente e sem curl/wget para baixá-lo"
     exit 1
@@ -52,8 +52,8 @@ fi
 
 # ----- instalação ------------------------------------------------------------
 mkdir -p "$INSTALL_DIR"
-install -m 755 "$SRC" "$INSTALL_DIR/brekke"
-mkdir -p "$BREKKE_HOME/profiles" "$BREKKE_HOME/backups"
+install -m 755 "$SRC" "$INSTALL_DIR/maint"
+mkdir -p "$MAINT_HOME/profiles" "$MAINT_HOME/backups"
 
 # verifica PATH
 case ":$PATH:" in
@@ -62,9 +62,9 @@ case ":$PATH:" in
 esac
 
 # ----- resultado -------------------------------------------------------------
-info "Brekke CLI instalado em $INSTALL_DIR/brekke"
-info "Diretório de dados: $BREKKE_HOME"
-info "Teste: brekke --help"
+info "Maint CLI instalado em $INSTALL_DIR/maint"
+info "Diretório de dados: $MAINT_HOME"
+info "Teste: maint --help"
 
 if [[ $- == *i* ]] || [ -t 1 ]; then
   if ! grep -q "'$INSTALL_DIR'" "$HOME/.bashrc" 2>/dev/null \

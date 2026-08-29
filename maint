@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# maint — wrapper de execução no host.
+# Puxa a imagem maint (Docker Hub) se ausente e dispara o container
+# com ~/.maint montado em /data.
+set -euo pipefail
+
+MAINT_IMAGE="${MAINT_IMAGE:-rlivdev/maint-cli:latest}"
+MAINT_HOME="${MAINT_HOME:-$HOME/.maint}"
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo "erro: docker não está instalado ou fora do PATH" >&2
+  exit 1
+fi
+
+if [ ! -d "$MAINT_HOME" ]; then
+  echo "criando diretório $MAINT_HOME" >&2
+  mkdir -p "$MAINT_HOME/profiles" "$MAINT_HOME/backups"
+fi
+
+if ! docker image inspect "$MAINT_IMAGE" >/dev/null 2>&1; then
+  echo "puxando imagem $MAINT_IMAGE..." >&2
+  docker pull "$MAINT_IMAGE"
+fi
+
+exec docker run --rm -i \
+  --network host \
+  -v "$MAINT_HOME:/data" \
+  "$MAINT_IMAGE" \
+  "$@"

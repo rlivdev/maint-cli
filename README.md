@@ -1,4 +1,4 @@
-# Brekke CLI
+# Maint CLI
 
 Ferramenta de linha de comando para **backup** e **restore** de **PostgreSQL** e **MinIO**, encapsulada em um container Docker. Foco: simplicidade, alta usabilidade e configuração direta.
 
@@ -13,15 +13,15 @@ Clone o repositório e execute `make install`:
 
 ```sh
 # repo privado: use git com autenticação (HTTPS token / SSH)
-git clone https://github.com/brekke-cloud/brekke-cli.git
-cd brekke-cli
+git clone https://github.com/rlivdev/maint-cli.git
+cd maint-cli
 make install
 ```
 
 `make install` (via `install.sh`):
-1. baixa/puxa a imagem `brekke-cloud/brekke-cli` do Docker Hub (público)
-2. instala o wrapper `brekke` em `~/.local/bin`
-3. cria `~/.brekke/profiles` e `~/.brekke/backups`
+1. baixa/puxa a imagem `rlivdev/maint-cli` do Docker Hub (público)
+2. instala o wrapper `maint` em `~/.local/bin`
+3. cria `~/.maint/profiles` e `~/.maint/backups`
 4. na primeira execução do container, puxa a imagem automaticamente
 
 Certifique-se de que `~/.local/bin` está no PATH:
@@ -35,7 +35,7 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
 ### Build manual (contribuidores)
 
 ```sh
-make docker-build          # builda imagem brekke-cloud/brekke-cli:latest
+make docker-build          # builda imagem rlivdev/maint-cli:latest
 make build                 # builda binário nativo (go build) em ./bin/
 make test                  # roda testes
 ```
@@ -47,21 +47,21 @@ O binário nativo apenas dispara o container Docker. Toda a lógica roda no cont
 ### Estrutura de diretórios
 
 ```
-~/.brekke/
+~/.maint/
 ├── profiles/            # perfis de configuração (YAML)
 └── backups/             # pacotes de backup gerados
     └── <profile>/
         └── <profile>-<YYYYMMDD-HHMMSS>.tar.gz
 ```
 
-O diretório `~/.brekke` é montado como volume no container (`/data`). Se não existir, é criado automaticamente pelo wrapper na primeira execução.
+O diretório `~/.maint` é montado como volume no container (`/data`). Se não existir, é criado automaticamente pelo wrapper na primeira execução.
 
 ### Criando um perfil
 
 O perfil é identificado pelo **nome do arquivo** (sem a extensão `.yaml`). Crie o arquivo:
 
 ```sh
-cp examples/sample-service.yaml ~/.brekke/profiles/sample-service.yaml
+cp examples/sample-service.yaml ~/.maint/profiles/sample-service.yaml
 ```
 
 Exemplo de perfil:
@@ -104,9 +104,9 @@ backup:
 ### Backup
 
 ```sh
-brekke backup                          # usa o profile padrão
-brekke backup -p sample-service        # profile informado por flag
-brekke backup --profile sample-service # forma longa
+maint backup                          # usa o profile padrão
+maint backup -p sample-service        # profile informado por flag
+maint backup --profile sample-service # forma longa
 ```
 
 Resultado:
@@ -118,10 +118,10 @@ Backup concluído: /data/backups/sample-service/sample-service-20260810-120000.t
 ### Restore
 
 ```sh
-brekke restore                          # restaura o backup mais recente do profile padrão
-brekke restore -p sample-service        # restaura o backup mais recente do perfil
-brekke restore -f sample-service-20260810-120000.tar.gz
-brekke restore --file sample-service-20260810-120000.tar.gz
+maint restore                          # restaura o backup mais recente do profile padrão
+maint restore -p sample-service        # restaura o backup mais recente do perfil
+maint restore -f sample-service-20260810-120000.tar.gz
+maint restore --file sample-service-20260810-120000.tar.gz
 ```
 
 ### Flags
@@ -136,7 +136,7 @@ brekke restore --file sample-service-20260810-120000.tar.gz
 
 ## Como funciona (resumo)
 
-1. **Wrapper** no host cria `~/.brekke` se necessário e dispara o container com volume `~/.brekke:/data`, repassando flags e argumentos.
+1. **Wrapper** no host cria `~/.maint` se necessário e dispara o container com volume `~/.maint:/data`, repassando flags e argumentos.
 2. **Container** (Go + cobra) resolve o profile e valida a `version`.
 3. **Backup**:
    - PostgreSQL → `pg_dump` do banco.
@@ -148,7 +148,7 @@ brekke restore --file sample-service-20260810-120000.tar.gz
 
 A imagem contém:
 
-- Binário `brekke` (Go + cobra)
+- Binário `maint` (Go + cobra)
 - `pg_dump` / `psql` (cliente PostgreSQL)
 - `mc` (MinIO Client)
 - `tar` / `gzip`
@@ -158,7 +158,7 @@ A imagem contém:
 ```sh
 make test        # roda testes
 make vet         # análise estática
-make build       # build local (bin/brekke)
+make build       # build local (bin/maint)
 make docker-build
 ```
 
@@ -167,7 +167,7 @@ Estrutura do código:
 ```
 main.go                 # entrypoint
 cmd/                    # cobra commands (backup, restore)
-internal/brekke/        # lógica de domínio
+internal/maint/        # lógica de domínio
   profile.go            # carregamento e validação de perfis
   backup.go             # backup (pg_dump, mc, empacotamento)
 ```

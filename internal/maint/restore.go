@@ -1,4 +1,4 @@
-package brekke
+package maint
 
 import (
 	"archive/tar"
@@ -42,7 +42,7 @@ func FindLatestBackup(dataDir, name string) (string, error) {
 
 // RunRestore descompacta o backup e importa postgres e minio do profile.
 func RunRestore(dataDir string, p *Profile, backupFile string) error {
-	tmpDir, err := os.MkdirTemp("", "brekke-restore-"+p.Name+"-")
+	tmpDir, err := os.MkdirTemp("", "maint-restore-"+p.Name+"-")
 	if err != nil {
 		return fmt.Errorf("falha ao criar diretório temporário: %w", err)
 	}
@@ -275,4 +275,4 @@ func bucketAllowed(configured []string, name string) bool {
 	return false
 }
 
-var alias = "brekke-backup"
+var alias = "maint-backup"

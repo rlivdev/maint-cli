@@ -1,8 +1,8 @@
-# Brekke CLI — Especificação Técnica
+# Maint CLI — Especificação Técnica
 
 ## 1. Visão Geral
 
-`brekke-cli` = ferramenta de linha de comando encapsulada em container Docker. Executa operações de **backup** e **restore** de PostgreSQL e MinIO com foco em simplicidade, alta usabilidade e configuração direta.
+`maint-cli` = ferramenta de linha de comando encapsulada em container Docker. Executa operações de **backup** e **restore** de PostgreSQL e MinIO com foco em simplicidade, alta usabilidade e configuração direta.
 
 - Linguagem: **Go** (versão recente)
 - CLI: **cobra** (versão recente)
@@ -12,13 +12,13 @@
 
 ```
 +----------------------------- Host -----------------------------+
-|  ~/.brekke/                 |                                  |
-|   ├── profiles/*.yaml       |     brekke (wrapper binário)      |
+|  ~/.maint/                 |                                  |
+|   ├── profiles/*.yaml       |     maint (wrapper binário)      |
 |   └── backups/<profile>/    └─────────┐                          |
 +---------------------------------------┼-------------------------+
-                                        | docker run -v ~/.brekke:/data
+                                        | docker run -v ~/.maint:/data
                                   +------v-----------------------+
-                                  |  Container brekke            |
+                                  |  Container maint            |
                                   |   - código Go + cobra        |
                                   |   - pg_dump / psql           |
                                   |   - minio CLI (mc)           |
@@ -29,14 +29,14 @@
 
 | Camada | Responsabilidade |
 |--------|-----------------|
-| **Wrapper (host)** | Valida args, resolve profile, monta comando `docker run`, monta volume `~/.brekke:/data`, passa flags e args como variáveis de ambiente / args do container |
+| **Wrapper (host)** | Valida args, resolve profile, monta comando `docker run`, monta volume `~/.maint:/data`, passa flags e args como variáveis de ambiente / args do container |
 | **CLI Go + cobra** | Executa comandos `backup` e `restore`, parse de flags/profiles, orquestração pg_dump + mc, geração/leitura do pacote `.tar.gz` |
 | **Ferramentas** | `pg_dump`/`psql` (PostgreSQL), `mc` (MinIO), `tar` (empacotamento) |
 
 ## 3. Estrutura de Diretórios
 
 ```
-~/.brekke/
+~/.maint/
 ├── profiles/            # arquivos de configuração YAML (1 arquivo = 1 profile)
 └── backups/             # pacotes de backup
     └── <profile-name>/
@@ -45,10 +45,10 @@
 
 | Diretório | Uso |
 |-----------|-----|
-| `~/.brekke/profiles` | Leitura de configuração (montado no container) |
-| `~/.brekke/backups/<profile>` | Gravação/generating e restauração de pacotes (montado no container) |
+| `~/.maint/profiles` | Leitura de configuração (montado no container) |
+| `~/.maint/backups/<profile>` | Gravação/generating e restauração de pacotes (montado no container) |
 
-Volume único `~/.brekke:/data` no container dá acesso a profiles e backups.
+Volume único `~/.maint:/data` no container dá acesso a profiles e backups.
 
 ## 4. Perfis (Profiles)
 
@@ -112,9 +112,9 @@ backup:
 ### 5.1 Backup
 
 ```
-brekke backup
-brekke backup -p sample-service
-brekke backup --profile sample-service
+maint backup
+maint backup -p sample-service
+maint backup --profile sample-service
 ```
 
 - Sem flag `-p/--profile`: usar profile padrão (definir convenção, ex. `default` ou exigir flag).
@@ -126,16 +126,16 @@ brekke backup --profile sample-service
   4. PostgreSQL → `pg_dump` do banco.
   5. MinIO → `mc mirror` dos buckets.
   6. Empacotar em `.tar.gz`.
-  7. Salvar em `~/.brekke/backups/<profile>/<profile>-<YYYYMMDD-HHMMSS>.tar.gz` (via volume `/data`).
+  7. Salvar em `~/.maint/backups/<profile>/<profile>-<YYYYMMDD-HHMMSS>.tar.gz` (via volume `/data`).
 
 ### 5.2 Restore
 
 ```
-brekke restore
-brekke restore -p sample-service
-brekke restore --profile sample-service
-brekke restore -f sample-service-20260810-120000.tar.gz
-brekke restore --file sample-service-20260810-120000.tar.gz
+maint restore
+maint restore -p sample-service
+maint restore --profile sample-service
+maint restore -f sample-service-20260810-120000.tar.gz
+maint restore --file sample-service-20260810-120000.tar.gz
 ```
 
 - Sem `-f/--file`: usar pacote mais recente do profile.
@@ -172,11 +172,11 @@ brekke restore --file sample-service-20260810-120000.tar.gz
 
 ## 7. Wrapper de Execução (Host)
 
-- Binário leve no host (`brekke`).
+- Binário leve no host (`maint`).
 - Responsabilidades:
   1. Resolver profile e flags.
   2. Montar comando `docker run`:
-     - Volume: `-v ~/.brekke:/data`
+     - Volume: `-v ~/.maint:/data`
      - Imagem do container com Go + cobra + `pg_dump` + `psql` + `mc` + `tar`.
   3. Passar comando/flags ao container.
   4. Propagate exit code e saída.
@@ -188,7 +188,7 @@ Alternativa (a definir): wrapper em Go compilado ou script. Substituir ambiente 
 
 | Cenário | Comportamento |
 |---------|---------------|
-| Profile não encontrado | Erro: `profile "<nome>" não encontrado em ~/.brekke/profiles` |
+| Profile não encontrado | Erro: `profile "<nome>" não encontrado em ~/.maint/profiles` |
 | Arquivo de profile com `version` não suportada | Erro de compatibilidade |
 | YAML inválido | Erro de parse com detalhe |
 | Arquivo de restore não encontrado | Erro informando arquivo ausente |
@@ -201,13 +201,13 @@ Alternativa (a definir): wrapper em Go compilado ou script. Substituir ambiente 
 
 - Senhas/credenciais **somente no arquivo de perfil**, não em variáveis de ambiente do container nem no processo host.
 - Container recebe dados via volume montado — não embutir segredos na imagem.
-- Recomendado: permissões restritas em `~/.brekke/profiles` (ex. `chmod 600`).
+- Recomendado: permissões restritas em `~/.maint/profiles` (ex. `chmod 600`).
 - Não logar credenciais em saída padrão.
 
 ## 10. Requisitos do Container
 
 Imagem base deve conter:
-- Binário `brekke` (Go + cobra)
+- Binário `maint` (Go + cobra)
 - `pg_dump`, `psql` (cliente PostgreSQL)
 - `mc` (MinIO Client)
 - `tar` (+ `gzip`)
