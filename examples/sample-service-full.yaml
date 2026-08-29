@@ -1,19 +1,18 @@
 version: "1"
 name: "sample-service-full"
 
-backup:
-  postgres:
-    host: "db.sample.internal"
-    port: 5432
-    user: "postgres"
-    password: "MinhaSenhaSuperSegura123"
-    database: "sample_prod"
+postgres:
+  host: "db.sample.internal"
+  port: 5432
+  user: "postgres"
+  password: "MinhaSenhaSuperSegura123"
+  database: "sample_prod"
 
-  minio:
-    host: "minio.sample.internal"
-    port: "9000"
-    access_key: "minioadmin"
-    secret_key: "minioadminpassword"
-    buckets:
-      - "sample"
-      - "sample2"
+minio:
+  host: "minio.sample.internal"
+  port: "9000"
+  access_key: "minioadmin"
+  secret_key: "minioadminpassword"
+  buckets:
+    - "sample"
+    - "sample2"

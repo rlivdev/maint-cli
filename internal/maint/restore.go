@@ -56,21 +56,21 @@ func RunRestore(dataDir string, p *Profile, backupFile string) error {
 	restoredPostgres := false
 	restoredMinio := false
 
-	if p.Backup.Postgres != nil {
-		if err := restorePostgres(unpackedDir, p.Backup.Postgres); err != nil {
+	if p.Postgres != nil {
+		if err := restorePostgres(unpackedDir, p.Postgres); err != nil {
 			return err
 		}
 		restoredPostgres = true
 	}
-	if p.Backup.Minio != nil {
-		if err := restoreMinio(unpackedDir, p.Backup.Minio); err != nil {
+	if p.Minio != nil {
+		if err := restoreMinio(unpackedDir, p.Minio); err != nil {
 			return err
 		}
 		restoredMinio = true
 	}
 
 	if restoredPostgres {
-		fmt.Printf("PostgreSQL restaurado com sucesso (%s)\n", p.Backup.Postgres.Database)
+		fmt.Printf("PostgreSQL restaurado com sucesso (%s)\n", p.Postgres.Database)
 	}
 	if restoredMinio {
 		fmt.Printf("MinIO restaurado com sucesso (%s)\n", p.Name)

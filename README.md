@@ -70,34 +70,33 @@ Exemplo de perfil:
 version: "1"
 name: "sample-service"
 
-backup:
-  postgres:
-    host: "db.sample.internal"
-    port: 5432
-    user: "postgres"
-    password: "MinhaSenhaSuperSegura123"
-    database: "sample_prod"
+postgres:
+  host: "db.sample.internal"
+  port: 5432
+  user: "postgres"
+  password: "MinhaSenhaSuperSegura123"
+  database: "sample_prod"
 
-  minio:
-    host: "minio.sample.internal"
-    port: "9000"
-    access_key: "minioadmin"
-    secret_key: "minioadminpassword"
-    buckets:
-      - "sample"
-      - "sample2"
+minio:
+  host: "minio.sample.internal"
+  port: "9000"
+  access_key: "minioadmin"
+  secret_key: "minioadminpassword"
+  buckets:
+    - "sample"
+    - "sample2"
 ```
 
 | Campo | Descrição |
 |-------|-----------|
 | `version` | Versão do formato do perfil (atual: `"1"`) |
 | `name` | Nome do perfil. Deve ser igual ao nome do arquivo |
-| `backup.postgres.*` | Parâmetros de conexão PostgreSQL |
-| `backup.minio.*` | Parâmetros de conexão MinIO. `buckets` vazio ou ausente = todos os buckets |
+| `postgres.*` | Parâmetros de conexão PostgreSQL |
+| `minio.*` | Parâmetros de conexão MinIO. `buckets` vazio ou ausente = todos os buckets |
 
 **Portas padrão** (se não informadas): PostgreSQL `5432`, MinIO `9000`.
 
-> Configure apenas `backup.postgres` **ou** `backup.minio` para fazer backup de um único recurso.
+> Configure apenas `postgres` **ou** `minio` para fazer backup de um único recurso.
 
 ## Uso
 

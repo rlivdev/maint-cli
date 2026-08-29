@@ -63,22 +63,21 @@ Volume único `~/.maint:/data` no container dá acesso a profiles e backups.
 version: "1"
 name: "sample-service"
 
-backup:
-  postgres:
-    host: "db.sample.internal"
-    port: 5432
-    user: "postgres"
-    password: "MinhaSenhaSuperSegura123"
-    database: "sample_prod"
+postgres:
+  host: "db.sample.internal"
+  port: 5432
+  user: "postgres"
+  password: "MinhaSenhaSuperSegura123"
+  database: "sample_prod"
 
-  minio:
-    host: "minio.sample.internal"
-    port: "9000"
-    access_key: "minioadmin"
-    secret_key: "minioadminpassword"
-    buckets:
-      - "sample"
-      - "sample2"
+minio:
+  host: "minio.sample.internal"
+  port: "9000"
+  access_key: "minioadmin"
+  secret_key: "minioadminpassword"
+  buckets:
+    - "sample"
+    - "sample2"
 ```
 
 ### 4.2 Campos
@@ -87,16 +86,16 @@ backup:
 |-------|------|-------------|-----------|
 | `version` | string | sim | Versão do formato do arquivo. Validação de compatibilidade |
 | `name` | string | sim | Nome do profile (deve casar com nome do arquivo) |
-| `backup.postgres.host` | string | sim* | Host PostgreSQL |
-| `backup.postgres.port` | int | sim* | Porta PostgreSQL (padrão 5432) |
-| `backup.postgres.user` | string | sim* | Usuário PostgreSQL |
-| `backup.postgres.password` | string | sim* | Senha PostgreSQL |
-| `backup.postgres.database` | string | sim* | Banco PostgreSQL |
-| `backup.minio.host` | string | não** | Host MinIO |
-| `backup.minio.port` | string/int | não** | Porta MinIO (padrão 9000) |
-| `backup.minio.access_key` | string | não** | Access key MinIO |
-| `backup.minio.secret_key` | string | não** | Secret key MinIO |
-| `backup.minio.buckets` | array de string | não** | Buckets a incluir (vazio/ausente = todos) |
+| `postgres.host` | string | sim* | Host PostgreSQL |
+| `postgres.port` | int | sim* | Porta PostgreSQL (padrão 5432) |
+| `postgres.user` | string | sim* | Usuário PostgreSQL |
+| `postgres.password` | string | sim* | Senha PostgreSQL |
+| `postgres.database` | string | sim* | Banco PostgreSQL |
+| `minio.host` | string | não** | Host MinIO |
+| `minio.port` | string/int | não** | Porta MinIO (padrão 9000) |
+| `minio.access_key` | string | não** | Access key MinIO |
+| `minio.secret_key` | string | não** | Secret key MinIO |
+| `minio.buckets` | array de string | não** | Buckets a incluir (vazio/ausente = todos) |
 
 \* obrigatório se recurso PostgreSQL presente
 \*\* obrigatório se recurso MinIO presente

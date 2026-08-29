@@ -37,13 +37,13 @@ func RunBackup(dataDir string, p *Profile) (*BackupResult, error) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	if p.Backup.Postgres != nil {
-		if err := dumpPostgres(tmpDir, p.Backup.Postgres); err != nil {
+	if p.Postgres != nil {
+		if err := dumpPostgres(tmpDir, p.Postgres); err != nil {
 			return nil, err
 		}
 	}
-	if p.Backup.Minio != nil {
-		if err := mirrorMinio(tmpDir, p.Backup.Minio); err != nil {
+	if p.Minio != nil {
+		if err := mirrorMinio(tmpDir, p.Minio); err != nil {
 			return nil, err
 		}
 	}

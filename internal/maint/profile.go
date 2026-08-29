@@ -19,13 +19,10 @@ const (
 var profileNameRe = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
 
 type Profile struct {
-	Version string `yaml:"version"`
-	Name    string `yaml:"name"`
-
-	Backup struct {
-		Postgres *PGConfig `yaml:"postgres"`
-		Minio    *MinioConfig `yaml:"minio"`
-	} `yaml:"backup"`
+	Version  string       `yaml:"version"`
+	Name     string       `yaml:"name"`
+	Postgres *PGConfig    `yaml:"postgres"`
+	Minio    *MinioConfig `yaml:"minio"`
 }
 
 type PGConfig struct {
@@ -112,39 +109,39 @@ func LoadProfile(dataDir, name string) (*Profile, error) {
 }
 
 func (p *Profile) Validate() error {
-	if p.Backup.Postgres == nil && p.Backup.Minio == nil {
-		return fmt.Errorf("nenhum recurso configurado (backup.postgres ou backup.minio)")
+	if p.Postgres == nil && p.Minio == nil {
+		return fmt.Errorf("nenhum recurso configurado (postgres ou minio)")
 	}
 
-	if pg := p.Backup.Postgres; pg != nil {
+	if pg := p.Postgres; pg != nil {
 		missing := []string{}
 		if strings.TrimSpace(pg.Host) == "" {
-			missing = append(missing, "backup.postgres.host")
+			missing = append(missing, "postgres.host")
 		}
 		if strings.TrimSpace(pg.User) == "" {
-			missing = append(missing, "backup.postgres.user")
+			missing = append(missing, "postgres.user")
 		}
 		if strings.TrimSpace(pg.Password) == "" {
-			missing = append(missing, "backup.postgres.password")
+			missing = append(missing, "postgres.password")
 		}
 		if strings.TrimSpace(pg.Database) == "" {
-			missing = append(missing, "backup.postgres.database")
+			missing = append(missing, "postgres.database")
 		}
 		if len(missing) > 0 {
 			return fmt.Errorf("campos obrigatórios de postgres ausentes: %s", strings.Join(missing, ", "))
 		}
 	}
 
-	if mi := p.Backup.Minio; mi != nil {
+	if mi := p.Minio; mi != nil {
 		missing := []string{}
 		if strings.TrimSpace(mi.Host) == "" {
-			missing = append(missing, "backup.minio.host")
+			missing = append(missing, "minio.host")
 		}
 		if strings.TrimSpace(mi.AccessKey) == "" {
-			missing = append(missing, "backup.minio.access_key")
+			missing = append(missing, "minio.access_key")
 		}
 		if strings.TrimSpace(mi.SecretKey) == "" {
-			missing = append(missing, "backup.minio.secret_key")
+			missing = append(missing, "minio.secret_key")
 		}
 		if len(missing) > 0 {
 			return fmt.Errorf("campos obrigatórios de minio ausentes: %s", strings.Join(missing, ", "))

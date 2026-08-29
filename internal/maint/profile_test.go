@@ -25,20 +25,19 @@ func TestLoadProfile_OK(t *testing.T) {
 	writeProfile(t, dir, "sample-service", `
 version: "1"
 name: "sample-service"
-backup:
-  postgres:
-    host: "db.local"
-    user: "postgres"
-    password: "secret"
-    database: "app"
+postgres:
+  host: "db.local"
+  user: "postgres"
+  password: "secret"
+  database: "app"
 `)
 
 	p, err := LoadProfile(dir, "sample-service")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if p.Backup.Postgres.Host != "db.local" {
-		t.Errorf("wrong host: %s", p.Backup.Postgres.Host)
+	if p.Postgres.Host != "db.local" {
+		t.Errorf("wrong host: %s", p.Postgres.Host)
 	}
 }
 
