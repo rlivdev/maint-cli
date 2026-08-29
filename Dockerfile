@@ -33,6 +33,14 @@ RUN apt-get update \
 RUN curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/bin/mc \
     && chmod +x /usr/bin/mc
 
+# Instala o docker CLI (client) para o migrate disparar o container redgate/flyway
+# contra o daemon do host via socket exposto pelo wrapper.
+ARG DOCKER_CLI_VERSION="25.0.5"
+RUN curl -fsSL "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_CLI_VERSION}.tgz" -o /tmp/docker.tgz \
+    && tar -xzf /tmp/docker.tgz -C /tmp \
+    && mv /tmp/docker/docker /usr/bin/docker \
+    && rm -rf /tmp/docker.tgz /tmp/docker
+
 COPY --from=builder /out/maint /usr/bin/maint
 
 # Diretório padrão montado pelo wrapper (profiles + backups)

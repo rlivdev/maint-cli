@@ -123,12 +123,27 @@ maint restore -f sample-service-20260810-120000.tar.gz
 maint restore --file sample-service-20260810-120000.tar.gz
 ```
 
+### Migrate
+
+```sh
+maint migrate                              # usa ./infra/flyway/migrations (padrão)
+maint migrate -p sample-service            # migra o profile informado
+maint migrate --migrations ./my-migrations # diretório customizado
+```
+
+Executa `flyway migrate` (`redgate/flyway:13.4.0`) no banco PostgreSQL do profile.
+
+> O wrapper (`maint`) resolve `--migrations` para caminho absoluto no host e o
+> monta dentro do container no mesmo path. Necessário socket docker exposto
+> (padrão `/var/run/docker.sock`) para disparar o container `redgate/flyway`.
+
 ### Flags
 
 | Flag | Shorthand | Comando | Descrição |
 |------|-----------|---------|-----------|
-| `--profile` | `-p` | backup/restore | Nome do perfil |
+| `--profile` | `-p` | backup/restore/migrate | Nome do perfil |
 | `--file` | `-f` | restore | Nome do pacote a restaurar |
+| `--migrations` | | migrate | Diretório com migrações flyway (padrão: `./infra/flyway/migrations`) |
 | `--data-dir` | `-d` | todos | Diretório raiz de dados (padrão: `/data` no container) |
 
 > **Aviso:** o restore sobrescreve os dados atuais do PostgreSQL e MinIO do perfil. Use com cautela.
@@ -142,6 +157,7 @@ maint restore --file sample-service-20260810-120000.tar.gz
    - MinIO → `mc mirror` dos buckets.
    - Tudo empacotado em um único `.tar.gz`.
 4. **Restore**: descompacta o `.tar.gz` e importa de volta.
+5. **Migrate**: roda `flyway migrate` via container apontando para o PostgreSQL do profile.
 
 ## Contêiner (imagem Docker)
 
@@ -165,8 +181,9 @@ Estrutura do código:
 
 ```
 main.go                 # entrypoint
-cmd/                    # cobra commands (backup, restore)
+cmd/                    # cobra commands (backup, restore, migrate)
 internal/maint/        # lógica de domínio
   profile.go            # carregamento e validação de perfis
   backup.go             # backup (pg_dump, mc, empacotamento)
+  migrate.go            # migrações flyway (docker redgate/flyway)
 ```

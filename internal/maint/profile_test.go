@@ -135,6 +135,20 @@ func TestUnpackTarGz_PathTraversal(t *testing.T) {
 	}
 }
 
+func TestRunMigrate_NoPostgres(t *testing.T) {
+	p := &Profile{Name: "svc"}
+	if err := RunMigrate(p, "./infra/flyway/migrations"); err == nil {
+		t.Fatal("want error when postgres not configured")
+	}
+}
+
+func TestRunMigrate_MissingDir(t *testing.T) {
+	p := &Profile{Name: "svc", Postgres: &PGConfig{Host: "db", User: "u", Password: "p", Database: "d"}}
+	if err := RunMigrate(p, "/nonexistent-migrations"); err == nil {
+		t.Fatal("want error when migrations dir missing")
+	}
+}
+
 func TestFindLatestBackup(t *testing.T) {
 	dir := t.TempDir()
 	backupsDir := filepath.Join(dir, "backups", "svc")
