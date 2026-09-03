@@ -21,10 +21,8 @@ var backupCmd = &cobra.Command{
 
 		os.Setenv("PGPASSWORD", pass)
 
-		filename := fmt.Sprintf("postgres_%s_%s.dump", db, time.Now().Format("20060102_150405"))
-		if _, err := os.Stat("/data"); err == nil {
-			filename = fmt.Sprintf("/data/%s", filename)
-		}
+		filename := fmt.Sprintf("/data/postgres/%s_%s.dump", db, time.Now().Format("20060102_150405"))
+		os.MkdirAll("/data/postgres", 0755)
 
 		cmdExec := exec.Command("pg_dump", "-h", host, "-p", port, "-U", user, "-Fc", "-f", filename, db)
 		cmdExec.Stdout = os.Stdout

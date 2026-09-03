@@ -26,7 +26,7 @@ var restoreCmd = &cobra.Command{
 
 		if file == "" {
 			var err error
-			file, err = findMostRecentDump()
+			file, err = findMostRecentForDB(db)
 			if err != nil {
 				return fmt.Errorf("no file specified and failed to find recent dump: %w", err)
 			}
@@ -46,13 +46,18 @@ var restoreCmd = &cobra.Command{
 	},
 }
 
-func findMostRecentDump() (string, error) {
+func findMostRecentForDB(db string) (string, error) {
+	searchPath := "/data/postgres"
+	if _, err := os.Stat(searchPath); err != nil {
+		return "", fmt.Errorf("no backup directory for database %q", db)
+	}
+
 	var files []string
-	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(searchPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() && strings.HasPrefix(info.Name(), "postgres_") && strings.HasSuffix(info.Name(), ".dump") {
+		if !info.IsDir() && strings.HasPrefix(info.Name(), db+"_") && strings.HasSuffix(info.Name(), ".dump") {
 			files = append(files, path)
 		}
 		return nil
@@ -62,7 +67,7 @@ func findMostRecentDump() (string, error) {
 	}
 
 	if len(files) == 0 {
-		return "", fmt.Errorf("no dump files found in current directory")
+		return "", fmt.Errorf("no dump files found for database %q", db)
 	}
 
 	sort.Slice(files, func(i, j int) bool {
