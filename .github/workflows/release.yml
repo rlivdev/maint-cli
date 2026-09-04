@@ -1,0 +1,20 @@
+name: Build on Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build
+    uses: rlivdev/workflows/.github/workflows/build.yml@v1
+    with:
+      service_name: maint-cli
+      version_tag: ${{ github.event.release.tag_name }}
+
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
