@@ -1,14 +1,14 @@
 # maint-cli
 
-CLI para backup e restore de PostgreSQL e MinIO. Roda via imagem Docker, sem dependencias locais alem do Docker.
+CLI for backup and restore of PostgreSQL and MinIO. Runs via a Docker image, no local dependencies beyond Docker.
 
-## Comandos
+## Commands
 
 ```sh
-maint postgres backup   # backup banco postgres
-maint postgres restore  # restore banco postgres
-maint minio backup      # backup bucket minio
-maint minio restore     # restore bucket minio
+maint postgres backup   # backup postgres database
+maint postgres restore  # restore postgres database
+maint minio backup      # backup minio bucket
+maint minio restore     # restore minio bucket
 ```
 
 ### postgres backup
@@ -17,14 +17,14 @@ maint minio restore     # restore bucket minio
 maint postgres backup --user <user> --password <pass> --database <db>
 ```
 
-Opcoes:
+Options:
 - `--host` (default `127.0.0.1`)
 - `--port` (default `5432`)
-- `--user` (obrigatorio)
-- `--password` (obrigatorio)
-- `--database` (obrigatorio)
+- `--user` (required)
+- `--password` (required)
+- `--database` (required)
 
-Gera dump em `./postgres/<db>_<timestamp>.dump`
+Produces a dump at `./postgres/<db>_<timestamp>.dump`.
 
 ### postgres restore
 
@@ -32,7 +32,7 @@ Gera dump em `./postgres/<db>_<timestamp>.dump`
 maint postgres restore --user <user> --password <pass> --database <db> [--file <dump>]
 ```
 
-`--file` opcional. Omitido, usa dump mais recente do banco.
+`--file` is optional. When omitted, the most recent dump for the database is used.
 
 ### minio backup
 
@@ -40,13 +40,13 @@ maint postgres restore --user <user> --password <pass> --database <db> [--file <
 maint minio backup --access_key <key> --secret_key <secret> --bucket <bucket>
 ```
 
-Opcoes:
+Options:
 - `--endpoint` (default `http://127.0.0.1:9000`)
-- `--access_key` (obrigatorio)
-- `--secret_key` (obrigatorio)
-- `--bucket` (obrigatorio)
+- `--access_key` (required)
+- `--secret_key` (required)
+- `--bucket` (required)
 
-Compacta em `./minio/<bucket>_<timestamp>.tar.gz`
+Compresses into `./minio/<bucket>_<timestamp>.tar.gz`.
 
 ### minio restore
 
@@ -54,23 +54,23 @@ Compacta em `./minio/<bucket>_<timestamp>.tar.gz`
 maint minio restore --access_key <key> --secret_key <secret> --bucket <bucket> [--file <tar.gz>]
 ```
 
-Cria bucket se nao existe. `--file` opcional, usa backup mais recente.
+Creates the bucket if it does not exist. `--file` is optional; when omitted, the most recent backup is used.
 
-## Instalacao
+## Installation
 
-Requer Docker instalado e rodando.
+Requires Docker installed and running.
 
-Instalar via GitHub (one-liner):
+Install from GitHub (one-liner):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/rlivdev/maint-cli/main/install.sh | sh
 ```
 
-O `install.sh`:
-1. Verifica se Docker esta instalado.
-2. Baixa a imagem `rlivdev/maint-cli:latest` do registry (atualiza imagens ja existentes).
-3. Copia o script `maint` para `/usr/local/bin`.
-4. Fallback: se o pull falhar e nao houver imagem local, constroi a partir do codigo local.
+The `install.sh` script:
+1. Verifies Docker is installed.
+2. Pulls the `rlivdev/maint-cli:latest` image from the registry (updates existing images).
+3. Copies the `maint` script to `/usr/local/bin`.
+4. Fallback: if the pull fails and no local image exists, builds from local sources.
 
 ### Manual
 
@@ -80,15 +80,15 @@ cd maint-cli
 ./install.sh
 ```
 
-### Atualizar
+### Update
 
-Rode `install.sh` novamente para puxar a ultima imagem `:latest` e atualizar o binario:
+Run `install.sh` again to pull the latest `:latest` image and refresh the binary:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/rlivdev/maint-cli/main/install.sh | sh
 ```
 
-## Usar sem instalar
+## Use without installing
 
 ```sh
 make build
@@ -97,5 +97,5 @@ make build
 
 ## Makefile
 
-- `build` — constroi imagem `rlivdev/maint-cli`
-- `postgres-backup` / `postgres-restore` / `minio-backup` / `minio-restore` — exemplos com credenciais demo
+- `build` — builds the `rlivdev/maint-cli:latest` image
+- `postgres-backup` / `postgres-restore` / `minio-backup` / `minio-restore` — examples with demo credentials
