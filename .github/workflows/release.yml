@@ -7,12 +7,14 @@ on:
 permissions:
   contents: read
 
+env:
+  SERVICE_NAME: maint-cli
+
 jobs:
   build:
     name: Build image
     runs-on: ubuntu-latest
     env:
-      SERVICE_NAME: maint-cli
       VERSION_TAG: ${{ github.event.release.tag_name }}
       DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE_NAME }}
     steps:
