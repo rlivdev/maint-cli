@@ -37,13 +37,13 @@ maint postgres restore --user <user> --password <pass> --database <db> [--file <
 ### minio backup
 
 ```sh
-maint minio backup --access_key <key> --secret_key <secret> --bucket <bucket>
+maint minio backup --access-key <key> --secret-key <secret> --bucket <bucket>
 ```
 
 Options:
 - `--endpoint` (default `http://127.0.0.1:9000`)
-- `--access_key` (required)
-- `--secret_key` (required)
+- `--access-key` (required)
+- `--secret-key` (required)
 - `--bucket` (required)
 
 Compresses into `./minio/<bucket>_<timestamp>.tar.gz`.
@@ -51,7 +51,7 @@ Compresses into `./minio/<bucket>_<timestamp>.tar.gz`.
 ### minio restore
 
 ```sh
-maint minio restore --access_key <key> --secret_key <secret> --bucket <bucket> [--file <tar.gz>]
+maint minio restore --access-key <key> --secret-key <secret> --bucket <bucket> [--file <tar.gz>]
 ```
 
 Creates the bucket if it does not exist. `--file` is optional; when omitted, the most recent backup is used.
@@ -60,16 +60,16 @@ Creates the bucket if it does not exist. `--file` is optional; when omitted, the
 
 Requires Docker installed and running.
 
-Install from GitHub (one-liner):
+Install from GitHub (one-liner). Requires root/sudo since the binary is installed to `/usr/local/bin`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/rlivdev/maint-cli/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/rlivdev/maint-cli/main/install.sh | sudo sh
 ```
 
 The `install.sh` script:
-1. Verifies Docker is installed.
+1. Verifies Docker is installed and the script runs as root.
 2. Pulls the `rlivdev/maint-cli:latest` image from the registry (updates existing images).
-3. Copies the `maint` script to `/usr/local/bin`.
+3. Downloads the `maint` script to `/usr/local/bin`.
 4. Fallback: if the pull fails and no local image exists, builds from local sources.
 
 ### Manual
@@ -77,7 +77,7 @@ The `install.sh` script:
 ```sh
 git clone git@github.com:rlivdev/maint-cli.git
 cd maint-cli
-./install.sh
+sudo ./install.sh
 ```
 
 ### Update
@@ -85,7 +85,7 @@ cd maint-cli
 Run `install.sh` again to pull the latest `:latest` image and refresh the binary:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/rlivdev/maint-cli/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/rlivdev/maint-cli/main/install.sh | sudo sh
 ```
 
 ## Use without installing

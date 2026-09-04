@@ -15,8 +15,8 @@ var minioBackupCmd = &cobra.Command{
 	Short: "Backup a MinIO bucket",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		endpoint, _ := cmd.Flags().GetString("endpoint")
-		accessKey, _ := cmd.Flags().GetString("access_key")
-		secretKey, _ := cmd.Flags().GetString("secret_key")
+		accessKey, _ := cmd.Flags().GetString("access-key")
+		secretKey, _ := cmd.Flags().GetString("secret-key")
 		bucket, _ := cmd.Flags().GetString("bucket")
 
 		alias := "maint-minio"
@@ -66,12 +66,12 @@ var minioBackupCmd = &cobra.Command{
 
 func init() {
 	minioBackupCmd.Flags().String("endpoint", "http://127.0.0.1:9000", "MinIO endpoint")
-	minioBackupCmd.Flags().String("access_key", "", "MinIO access key")
-	minioBackupCmd.Flags().String("secret_key", "", "MinIO secret key")
+	minioBackupCmd.Flags().String("access-key", "", "MinIO access key")
+	minioBackupCmd.Flags().String("secret-key", "", "MinIO secret key")
 	minioBackupCmd.Flags().String("bucket", "", "Bucket name")
 
-	minioBackupCmd.MarkFlagRequired("access_key")
-	minioBackupCmd.MarkFlagRequired("secret_key")
+	minioBackupCmd.MarkFlagRequired("access-key")
+	minioBackupCmd.MarkFlagRequired("secret-key")
 	minioBackupCmd.MarkFlagRequired("bucket")
 
 	minioCmd.AddCommand(minioBackupCmd)

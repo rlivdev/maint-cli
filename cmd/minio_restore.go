@@ -16,8 +16,8 @@ var minioRestoreCmd = &cobra.Command{
 	Short: "Restore a MinIO bucket",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		endpoint, _ := cmd.Flags().GetString("endpoint")
-		accessKey, _ := cmd.Flags().GetString("access_key")
-		secretKey, _ := cmd.Flags().GetString("secret_key")
+		accessKey, _ := cmd.Flags().GetString("access-key")
+		secretKey, _ := cmd.Flags().GetString("secret-key")
 		bucket, _ := cmd.Flags().GetString("bucket")
 		file, _ := cmd.Flags().GetString("file")
 
@@ -112,13 +112,13 @@ func findMostRecentMinioBackup(bucket string) (string, error) {
 
 func init() {
 	minioRestoreCmd.Flags().String("endpoint", "http://127.0.0.1:9000", "MinIO endpoint")
-	minioRestoreCmd.Flags().String("access_key", "", "MinIO access key")
-	minioRestoreCmd.Flags().String("secret_key", "", "MinIO secret key")
+	minioRestoreCmd.Flags().String("access-key", "", "MinIO access key")
+	minioRestoreCmd.Flags().String("secret-key", "", "MinIO secret key")
 	minioRestoreCmd.Flags().String("bucket", "", "Bucket name")
 	minioRestoreCmd.Flags().String("file", "", "Backup file to restore (optional, defaults to most recent)")
 
-	minioRestoreCmd.MarkFlagRequired("access_key")
-	minioRestoreCmd.MarkFlagRequired("secret_key")
+	minioRestoreCmd.MarkFlagRequired("access-key")
+	minioRestoreCmd.MarkFlagRequired("secret-key")
 	minioRestoreCmd.MarkFlagRequired("bucket")
 
 	minioCmd.AddCommand(minioRestoreCmd)
