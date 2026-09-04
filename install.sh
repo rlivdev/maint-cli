@@ -3,9 +3,9 @@ set -e
 
 BIN_DIR="/usr/local/bin"
 TARGET="$BIN_DIR/maint"
-SOURCE="$(dirname "$0")/maint"
 
 IMAGE="rlivdev/maint-cli:latest"
+BASE_URL="https://raw.githubusercontent.com/rlivdev/maint-cli/main"
 
 if ! command -v docker >/dev/null 2>&1; then
     echo "Error: docker not found. Install first."
@@ -17,15 +17,16 @@ echo "Pulling $IMAGE..."
 if ! docker pull "$IMAGE" >/dev/null 2>&1; then
     echo "Warning: could not pull $IMAGE from registry."
     if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
-        [ -f "$SOURCE" ] || { echo "Error: no local image and 'maint' script not found next to install.sh."; exit 1; }
-        echo "Building local image..."
-        (cd "$(dirname "$0")" && docker build -t "$IMAGE" .)
-    else
-        echo "Using existing local image."
+        echo "Error: no local image and could not pull from registry. Run install.sh from a cloned repo to build locally."
+        exit 1
     fi
+    echo "Using existing local image."
 fi
 
-install -m 0755 "$SOURCE" "$TARGET"
+# Download the maint script from the repo
+echo "Downloading maint script..."
+curl -fsSL "$BASE_URL/maint" -o "$TARGET"
+chmod 0755 "$TARGET"
 
 echo "Installed to $TARGET"
 echo "Run: maint --help"
