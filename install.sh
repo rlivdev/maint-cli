@@ -12,6 +12,12 @@ if ! command -v docker >/dev/null 2>&1; then
     exit 1
 fi
 
+if [ "$(id -u)" != "0" ]; then
+    echo "Error: run as root or via sudo to install to $BIN_DIR."
+    echo "Try: sudo sh install.sh"
+    exit 1
+fi
+
 # Pull latest image (always, so updates propagate with :latest)
 echo "Pulling $IMAGE..."
 if ! docker pull "$IMAGE" >/dev/null 2>&1; then
