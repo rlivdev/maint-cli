@@ -98,4 +98,3 @@ make build
 ## Makefile
 
 - `build` — builds the `rlivdev/maint-cli:latest` image
-- `postgres-backup` / `postgres-restore` / `minio-backup` / `minio-restore` — examples with demo credentials
